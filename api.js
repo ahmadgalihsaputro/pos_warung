@@ -70,7 +70,7 @@ const API = (() => {
     // Registry (project Apps Script terpisah) harus punya action 'resolveWarung'
     // yang mencari kode warung di sheet Registry dan mengembalikan { apiUrl, warungName }.
     async connectWarung(warungCode) {
-      const res = await callRegistry('resolveWarung', [{ code: warungCode }]);
+      const res = await callRegistry('resolveWarung', [warungCode]);
       if (res.success && res.data && res.data.apiUrl) {
         saveWarungConnection(warungCode, res.data.apiUrl, res.data.warungName);
       }
