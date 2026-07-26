@@ -76,6 +76,14 @@ const API = (() => {
       }
       return res;
     },
+    // Self-service: pemilik toko daftar sendiri setelah selesai Deploy Apps Script mereka.
+    async registerWarung(code, apiUrl, warungName) {
+      const res = await callRegistry('registerWarung', [{ code, apiUrl, warungName }]);
+      if (res.success && res.data) {
+        saveWarungConnection(res.data.code, res.data.apiUrl, res.data.warungName);
+      }
+      return res;
+    },
     disconnectWarung() {
       clearWarungConnection();
     },

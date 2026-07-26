@@ -371,6 +371,23 @@ function LoginPage({ onLogin }) {
 
 /* ── Onboarding (Multi-Tenant: pilih warung dulu sebelum login) ── */
 function OnboardingView({ onConnected }) {
+  const [mode, setMode] = useState('connect'); // 'connect' | 'register'
+
+  return (
+    <div className="login-container">
+      <div className="login-box">
+        <div className="login-logo-ico"><i className="fas fa-utensils"></i></div>
+        <h2>Point of Sale Warung</h2>
+        {mode === 'connect'
+          ? <ConnectWarungForm onConnected={onConnected} onSwitchMode={() => setMode('register')} />
+          : <RegisterWarungForm onConnected={onConnected} onSwitchMode={() => setMode('connect')} />}
+        <div className="login-footer">Oleh Tanpa Sorotan</div>
+      </div>
+    </div>
+  );
+}
+
+function ConnectWarungForm({ onConnected, onSwitchMode }) {
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -391,24 +408,73 @@ function OnboardingView({ onConnected }) {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-box">
-        <div className="login-logo-ico"><i className="fas fa-utensils"></i></div>
-        <h2>Point of Sale Warung</h2>
-        <p className="login-subtitle">Masukkan Kode Warung untuk memulai</p>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>Kode Warung</label>
-            <input type="text" value={code} onChange={(e) => setCode(e.target.value)} placeholder="Misalnya EMK001" autoCapitalize="characters" required />
-          </div>
-          {error && <div className="rs-popup-err show" style={{marginBottom:'12px'}}><i className="fas fa-exclamation-circle"></i> <span>{error}</span></div>}
-          <button type="submit" className="btn btn-primary" style={{width:'100%'}} disabled={loading}>
-            {loading ? <><i className="fas fa-spinner fa-spin"></i> Menghubungkan...</> : <><i className="fas fa-link"></i> Hubungkan</>}
-          </button>
-        </form>
-        <div className="login-footer">Oleh Tanpa Sorotan</div>
-      </div>
-    </div>
+    <>
+      <p className="login-subtitle">Masukkan Kode Warung untuk memulai</p>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label>Kode Warung</label>
+          <input type="text" value={code} onChange={(e) => setCode(e.target.value)} placeholder="Misalnya EMK001" autoCapitalize="characters" required />
+        </div>
+        {error && <div className="rs-popup-err show" style={{marginBottom:'12px'}}><i className="fas fa-exclamation-circle"></i> <span>{error}</span></div>}
+        <button type="submit" className="btn btn-primary" style={{width:'100%'}} disabled={loading}>
+          {loading ? <><i className="fas fa-spinner fa-spin"></i> Menghubungkan...</> : <><i className="fas fa-link"></i> Hubungkan</>}
+        </button>
+      </form>
+      <p style={{textAlign:'center', marginTop:'16px', fontSize:'14px'}}>
+        Toko baru? <a href="#" onClick={(e) => { e.preventDefault(); onSwitchMode(); }}>Daftarkan warung di sini</a>
+      </p>
+    </>
+  );
+}
+
+function RegisterWarungForm({ onConnected, onSwitchMode }) {
+  const [warungName, setWarungName] = useState('');
+  const [code, setCode] = useState('');
+  const [apiUrl, setApiUrl] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!warungName.trim() || !code.trim() || !apiUrl.trim()) return;
+    setLoading(true); setError('');
+    try {
+      const r = await API.registerWarung(code.trim(), apiUrl.trim(), warungName.trim());
+      setLoading(false);
+      if (r.success) { onConnected(); }
+      else setError(r.message || 'Gagal mendaftarkan warung');
+    } catch (err) {
+      setLoading(false);
+      setError('Tidak dapat terhubung ke server registry');
+    }
+  };
+
+  return (
+    <>
+      <p className="login-subtitle">Daftarkan warung baru (sekali saja)</p>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label>Nama Warung</label>
+          <input type="text" value={warungName} onChange={(e) => setWarungName(e.target.value)} placeholder="Misalnya Eat Mie Karadenan" required />
+        </div>
+        <div className="form-group">
+          <label>Kode Warung (bebas, buat sendiri)</label>
+          <input type="text" value={code} onChange={(e) => setCode(e.target.value)} placeholder="Misalnya EMK001" autoCapitalize="characters" required />
+        </div>
+        <div className="form-group">
+          <label>Apps Script Web App URL</label>
+          <input type="text" value={apiUrl} onChange={(e) => setApiUrl(e.target.value)} placeholder="https://script.google.com/macros/s/.../exec" required />
+          <small style={{color:'#888'}}>Didapat setelah kamu Deploy backend Apps Script di Google Sheet kamu sendiri (Deploy → New deployment → Web app).</small>
+        </div>
+        {error && <div className="rs-popup-err show" style={{marginBottom:'12px'}}><i className="fas fa-exclamation-circle"></i> <span>{error}</span></div>}
+        <button type="submit" className="btn btn-primary" style={{width:'100%'}} disabled={loading}>
+          {loading ? <><i className="fas fa-spinner fa-spin"></i> Memeriksa & mendaftarkan...</> : <><i className="fas fa-store"></i> Daftarkan Warung</>}
+        </button>
+      </form>
+      <p style={{textAlign:'center', marginTop:'16px', fontSize:'14px'}}>
+        Sudah punya warung terdaftar? <a href="#" onClick={(e) => { e.preventDefault(); onSwitchMode(); }}>Masukkan Kode Warung</a>
+      </p>
+    </>
   );
 }
 
