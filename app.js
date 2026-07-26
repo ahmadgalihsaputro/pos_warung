@@ -413,7 +413,7 @@ function ConnectWarungForm({ onConnected, onSwitchMode }) {
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Kode Warung</label>
-          <input type="text" value={code} onChange={(e) => setCode(e.target.value)} placeholder="Misalnya EMK001" autoCapitalize="characters" required />
+          <input type="text" value={code} onChange={(e) => setCode(e.target.value)} placeholder="Misalnya TKB001" autoCapitalize="characters" required />
         </div>
         {error && <div className="rs-popup-err show" style={{marginBottom:'12px'}}><i className="fas fa-exclamation-circle"></i> <span>{error}</span></div>}
         <button type="submit" className="btn btn-primary" style={{width:'100%'}} disabled={loading}>
@@ -455,11 +455,11 @@ function RegisterWarungForm({ onConnected, onSwitchMode }) {
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Nama Warung</label>
-          <input type="text" value={warungName} onChange={(e) => setWarungName(e.target.value)} placeholder="Misalnya Eat Mie Karadenan" required />
+          <input type="text" value={warungName} onChange={(e) => setWarungName(e.target.value)} placeholder="Misalnya Toko Baru" required />
         </div>
         <div className="form-group">
           <label>Kode Warung (bebas, buat sendiri)</label>
-          <input type="text" value={code} onChange={(e) => setCode(e.target.value)} placeholder="Misalnya EMK001" autoCapitalize="characters" required />
+          <input type="text" value={code} onChange={(e) => setCode(e.target.value)} placeholder="Misalnya TKB001" autoCapitalize="characters" required />
         </div>
         <div className="form-group">
           <label>Apps Script Web App URL</label>
