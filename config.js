@@ -1,11 +1,11 @@
 /**
  * config.js
- * Konfigurasi global aplikasi POS Warung (Multi-Tenant Frontend)
+ * Konfigurasi global aplikasi POS Warungan (Multi-Tenant Frontend)
  * Tidak boleh berisi logic bisnis. Hanya konstanta & helper baca/tulis konfigurasi.
  */
 
 const CONFIG = {
-  APP_NAME: 'POS Warung',
+  APP_NAME: 'Point of Sale Warungan',
   VERSION: '1.0.0',
 
   // URL Apps Script Registry PUSAT (satu-satunya backend yang alamatnya tetap/hardcode).
